@@ -1,6 +1,6 @@
-# 1.0.0 (2026-10-24)
+# [1.0.0](https://github.com/xeno-js/vercel/compare/4f84a606c7fe08b5093ec6315c33948cefb247bc...v1.0.0) (2026-11-06)
 
 ### Features
 
-- init plugin zod
-  ([871bd56](https://github.com/xeno-js/zod/commit/871bd56d044e149d6befa807a8bbb1604c06195c))
+- init project
+  ([4f84a60](https://github.com/xeno-js/vercel/commit/4f84a606c7fe08b5093ec6315c33948cefb247bc))
