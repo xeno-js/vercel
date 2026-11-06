@@ -1,6 +1,6 @@
 {
   "name": "@xeno-js/vercel",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Vercel Serverless Functions and Edge runtime integration for Xeno.js applications, enabling seamless BFF deployments.",
   "keywords": [
     "xeno",
