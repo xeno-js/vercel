@@ -1,0 +1,1 @@
+export { XenoVercel } from './infrastructure/vercel.handler'

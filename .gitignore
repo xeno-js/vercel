@@ -1,0 +1,34 @@
+# Node
+node_modules/
+
+# Build artifacts
+dist/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.log
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# npm auth token (if ever written to .npmrc.local)
+.npmrc.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor
+.DS_Store
+Thumbs.db
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -1,0 +1,108 @@
+{
+  "name": "@xeno-js/vercel",
+  "version": "0.0.0",
+  "description": "Vercel Serverless Functions and Edge runtime integration for Xeno.js applications, enabling seamless BFF deployments.",
+  "keywords": [
+    "xeno",
+    "xeno-js",
+    "xeno.js",
+    "vercel",
+    "vercel serverless",
+    "vercel functions",
+    "serverless functions",
+    "serverless typescript",
+    "edge runtime",
+    "bff",
+    "backend for frontend",
+    "cloud deployment",
+    "typescript",
+    "typescript backend",
+    "nodejs",
+    "node.js",
+    "dependency injection",
+    "clean architecture",
+    "hexagonal architecture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeno-js/vercel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xeno-js/vercel/issues"
+  },
+  "homepage": "https://www.xeno-js.it",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint --config eslint.config.mjs \"src/**/*.ts\" --max-warnings=0",
+    "lint:fix": "eslint --config eslint.config.mjs \"src/**/*.ts\" --fix --max-warnings=0",
+    "lint-staged": "lint-staged",
+    "commitlint": "commitlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run typecheck && npm run lint:fix && npm run test",
+    "verify:commit": "npm run lint-staged && npm run test",
+    "verify:push": "npm run check",
+    "prepare": "husky",
+    "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "prepublishOnly": "npm run check && npm run build",
+    "release:patch": "npm version patch && npm run changelog && npm run prepublishOnly && npm publish",
+    "release:minor": "npm version minor && npm run changelog && npm run prepublishOnly && npm publish",
+    "release:major": "npm version major && npm run changelog && npm run prepublishOnly && npm publish"
+  },
+  "author": "Xeno",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "peerDependencies": {
+    "@xeno-js/core": "^4.1.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@eslint/js": "^10.0.1",
+    "@types/pg": "^8.23.1",
+    "@vitest/coverage-v8": "^5.0.1",
+    "@xeno-js/core": "^4.1.1",
+    "conventional-changelog": "^8.1.3",
+    "conventional-changelog-angular": "^9.4.0",
+    "conventional-changelog-cli": "^5.0.0",
+    "conventional-changelog-writer": "^9.2.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
+    "prettier": "^3.9.9",
+    "tsc-alias": "^1.9.5",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.1"
+  },
+  "dependencies": {
+    "@vercel/node": "^16.0.2"
+  }
+}
