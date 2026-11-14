@@ -57,7 +57,7 @@ const createResponse = () => {
     status: vi.fn<(code: number) => unknown>(),
     json: vi.fn<(data: unknown) => unknown>(),
     end: vi.fn<() => unknown>(),
-    setHeader: vi.fn<(name: string, value: string) => unknown>(),
+    setHeader: vi.fn<(name: string, value: string | string[]) => unknown>(),
   }
   response.status.mockReturnValue(response)
   return response
@@ -163,6 +163,27 @@ describe('XenoVercel.handle', () => {
     expect(res.setHeader).not.toHaveBeenCalled()
     expect(res.status).toHaveBeenCalledWith(202)
     expect(res.json).toHaveBeenCalledWith({ accepted: true })
+  })
+
+  it('preserves all Set-Cookie headers from route results', async () => {
+    const route: Route = {
+      handler: async () => ({
+        status: 200,
+        data: { ok: true },
+        headers: {
+          'Set-Cookie': ['cookie-a=value-a; Path=/', 'cookie-b=value-b; Path=/'],
+        },
+      }),
+    }
+    const { app } = createApp(route)
+    const res = createResponse()
+
+    await handle(createRequest(), res, async () => app)
+
+    expect(res.setHeader).toHaveBeenCalledWith('Set-Cookie', [
+      'cookie-a=value-a; Path=/',
+      'cookie-b=value-b; Path=/',
+    ])
   })
 
   it('returns no content when the matched route produces no result', async () => {

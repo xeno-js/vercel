@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/xeno-js/vercel/compare/v1.0.2...v1.0.3) (2026-11-14)
+
+### Bug Fixes
+
+- settings cookie headers and response type
+  ([99e4743](https://github.com/xeno-js/vercel/commit/99e47434370acd3cf7a871d30658da2578015d56))
+
 ## [1.0.2](https://github.com/xeno-js/vercel/compare/v1.0.1...v1.0.2) (2026-11-14)
 
 ### Bug Fixes

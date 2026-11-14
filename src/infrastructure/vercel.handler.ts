@@ -69,7 +69,11 @@ export class XenoVercel {
           for (const [key, value] of Object.entries(respHeaders)) {
             if (Guards.isDefined(value)) {
               const headerValue =
-                Array.isArray(value) && !Guards.isNullOrEmpty(value) ? value[0] : String(value)
+                Array.isArray(value) && key.toLowerCase() === 'set-cookie'
+                  ? value.map((item) => String(item))
+                  : Array.isArray(value) && !Guards.isNullOrEmpty(value)
+                    ? value[0]
+                    : String(value)
               res.setHeader(key, headerValue)
             }
           }
