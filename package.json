@@ -1,6 +1,6 @@
 {
   "name": "@xeno-js/vercel",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Vercel Serverless Functions and Edge runtime integration for Xeno.js applications, enabling seamless BFF deployments.",
   "keywords": [
     "xeno",
@@ -82,7 +82,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.5",
     "@types/pg": "^8.23.1",
     "@vitest/coverage-v8": "^5.0.1",
     "@xeno-js/core": "^4.1.1",
@@ -90,7 +90,7 @@
     "conventional-changelog-angular": "^9.4.0",
     "conventional-changelog-cli": "^5.0.0",
     "conventional-changelog-writer": "^9.2.1",
-    "eslint": "^10.11.0",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "husky": "^9.1.7",
@@ -99,10 +99,10 @@
     "tsc-alias": "^1.9.5",
     "tsup": "^8.5.1",
     "typescript": "^5.8.0",
-    "typescript-eslint": "^8.70.1",
+    "typescript-eslint": "^8.36.0",
     "vitest": "^5.0.1"
   },
   "dependencies": {
-    "@vercel/node": "^16.0.2"
+    "@vercel/node": "^30.0.0"
   }
 }
