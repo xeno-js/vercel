@@ -1,13 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import type { Dictionary, IXenoApplication, XenoIncomingRequest, XenoRegistry } from '@xeno-js/core'
-import {
-  ERROR_CODE_MESSAGES,
-  ERROR_CODES,
-  Guards,
-  GuidHelper,
-  HttpHelper,
-  STATUS_CODES,
-} from '@xeno-js/core'
+import { ERROR_CODE_MESSAGES, ERROR_CODES, Guards, GuidHelper, STATUS_CODES } from '@xeno-js/core'
+
+import { HeaderUtils } from './header.utils'
 
 export class XenoVercel {
   public static async handle<TRegistry extends XenoRegistry = XenoRegistry>(
@@ -35,8 +30,7 @@ export class XenoVercel {
         })
       }
 
-      const normalizedHeaders = HttpHelper.normalizeHeaders(req.headers)
-      const incomingHeaders = new Headers(normalizedHeaders as Dictionary<string>)
+      const incomingHeaders = HeaderUtils.toIncomingHeaders(req.headers)
 
       if (Guards.isDefined(req.cookies) && !incomingHeaders.has('cookie')) {
         const cookieString = Object.entries(req.cookies)
@@ -65,15 +59,9 @@ export class XenoVercel {
 
       if (Guards.isDefined(routeResult)) {
         if (Guards.isDefined(routeResult.headers)) {
-          const respHeaders = HttpHelper.normalizeHeaders(routeResult.headers)
-          for (const [key, value] of Object.entries(respHeaders)) {
-            if (Guards.isDefined(value)) {
-              const headerValue =
-                Array.isArray(value) && key.toLowerCase() === 'set-cookie'
-                  ? value.map((item) => String(item))
-                  : Array.isArray(value) && !Guards.isNullOrEmpty(value)
-                    ? value[0]
-                    : String(value)
+          for (const [key, value] of Object.entries(routeResult.headers as Dictionary<unknown>)) {
+            const headerValue = HeaderUtils.toOutgoingHeaderValue(key, value)
+            if (Guards.isDefined(headerValue)) {
               res.setHeader(key, headerValue)
             }
           }

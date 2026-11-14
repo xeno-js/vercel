@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/xeno-js/vercel/compare/v1.0.3...v1.0.4) (2026-11-14)
+
+### Bug Fixes
+
+- **cookie:** preserved all set cookie
+  ([66d0d0d](https://github.com/xeno-js/vercel/commit/66d0d0d89578a927c64178951903a6179a4b5855))
+
 ## [1.0.3](https://github.com/xeno-js/vercel/compare/v1.0.2...v1.0.3) (2026-11-14)
 
 ### Bug Fixes

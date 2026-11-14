@@ -6,7 +6,14 @@ import { XenoVercel } from '../vercel.handler'
 
 const coreMocks = vi.hoisted(() => ({
   isDefined: vi.fn((value: unknown) => value !== undefined && value !== null),
-  normalizeHeaders: vi.fn((headers: object) => headers),
+  isObject: vi.fn((value: unknown) => typeof value === 'object' && value !== null),
+  isNullOrEmpty: vi.fn(
+    (value: unknown) =>
+      value === undefined ||
+      value === null ||
+      (typeof value === 'string' && value.length === 0) ||
+      (Array.isArray(value) && value.length === 0),
+  ),
   dispatch: vi.fn(),
   generateId: vi.fn(),
 }))
@@ -14,9 +21,12 @@ const coreMocks = vi.hoisted(() => ({
 vi.mock('@xeno-js/core', () => ({
   ERROR_CODE_MESSAGES: { SYSTEM_ERROR: 'System error' },
   ERROR_CODES: { NOT_FOUND: 'NOT_FOUND', SYSTEM_ERROR: 'SYSTEM_ERROR' },
-  Guards: { isDefined: coreMocks.isDefined },
+  Guards: {
+    isDefined: coreMocks.isDefined,
+    isObject: coreMocks.isObject,
+    isNullOrEmpty: coreMocks.isNullOrEmpty,
+  },
   GuidHelper: { generate: coreMocks.generateId },
-  HttpHelper: { normalizeHeaders: coreMocks.normalizeHeaders },
   STATUS_CODES: { NOT_FOUND: 404, NO_CONTENT: 204, INTERNAL_SERVER_ERROR: 500 },
 }))
 
@@ -76,7 +86,18 @@ describe('XenoVercel.handle', () => {
     coreMocks.isDefined
       .mockReset()
       .mockImplementation((value) => value !== undefined && value !== null)
-    coreMocks.normalizeHeaders.mockReset().mockImplementation((headers) => headers)
+    coreMocks.isObject
+      .mockReset()
+      .mockImplementation((value) => typeof value === 'object' && value !== null)
+    coreMocks.isNullOrEmpty
+      .mockReset()
+      .mockImplementation(
+        (value) =>
+          value === undefined ||
+          value === null ||
+          (typeof value === 'string' && value.length === 0) ||
+          (Array.isArray(value) && value.length === 0),
+      )
     coreMocks.dispatch.mockReset().mockResolvedValue('dispatched')
     coreMocks.generateId.mockReset().mockReturnValue('generated-id')
   })
@@ -127,7 +148,6 @@ describe('XenoVercel.handle', () => {
 
     await handle(req, res, async () => app)
 
-    expect(coreMocks.normalizeHeaders).toHaveBeenCalledWith(req.headers)
     const adaptedRequest = services.httpAdapter.adapt.mock.calls[0]?.[0]
     expect(adaptedRequest).toMatchObject({
       url: req.url,
@@ -149,6 +169,20 @@ describe('XenoVercel.handle', () => {
     expect(res.setHeader).toHaveBeenCalledWith('cache-control', 'no-store')
     expect(res.status).toHaveBeenCalledWith(201)
     expect(res.json).toHaveBeenCalledWith({ success: true })
+  })
+
+  it('joins incoming cookie header arrays with semicolon separator', async () => {
+    const route: Route = { handler: async () => ({ status: 200, data: { ok: true } }) }
+    const { app, services } = createApp(route)
+    const req = createRequest({
+      headers: { cookie: ['a=1', 'b=2'] } as unknown as VercelRequest['headers'],
+    })
+    const res = createResponse()
+
+    await handle(req, res, async () => app)
+
+    const adaptedRequest = services.httpAdapter.adapt.mock.calls[0]?.[0]
+    expect(adaptedRequest.headers.get('cookie')).toBe('a=1; b=2')
   })
 
   it('returns a matched route result without setting headers when none are provided', async () => {
