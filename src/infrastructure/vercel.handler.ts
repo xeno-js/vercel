@@ -36,9 +36,18 @@ export class XenoVercel {
       }
 
       const normalizedHeaders = HttpHelper.normalizeHeaders(req.headers)
+      const incomingHeaders = new Headers(normalizedHeaders as Dictionary<string>)
+
+      if (Guards.isDefined(req.cookies) && !incomingHeaders.has('cookie')) {
+        const cookieString = Object.entries(req.cookies)
+          .map(([key, value]) => `${key}=${value}`)
+          .join('; ')
+        incomingHeaders.set('cookie', cookieString)
+      }
+
       const xenoreq: XenoIncomingRequest = {
         url,
-        headers: new Headers(normalizedHeaders as Dictionary<string>),
+        headers: incomingHeaders,
         signal: req.signal,
         socket: req.socket,
         body: req.body,
@@ -59,7 +68,9 @@ export class XenoVercel {
           const respHeaders = HttpHelper.normalizeHeaders(routeResult.headers)
           for (const [key, value] of Object.entries(respHeaders)) {
             if (Guards.isDefined(value)) {
-              res.setHeader(key, value)
+              const headerValue =
+                Array.isArray(value) && !Guards.isNullOrEmpty(value) ? value[0] : String(value)
+              res.setHeader(key, headerValue)
             }
           }
         }
@@ -68,10 +79,12 @@ export class XenoVercel {
 
       return res.status(STATUS_CODES.NO_CONTENT).end()
     } catch (error) {
-      console.error("Errore fatale nell'handler Vercel di Xeno:", error)
+      console.error('Fatal error during request handling:', error)
+      if (res.headersSent) return res
       const isDev = process.env.NODE_ENV === 'development'
       const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
 
+      res.setHeader('Content-Type', 'application/json')
       return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
         success: false,
         error: {
